@@ -1,3 +1,12 @@
+.icon-box {
+  width: 24px;
+  height: 24px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .icon-button {
   width: 24px;
   height: 24px;
@@ -32,4 +41,16 @@
 
 .expand-right-light-icon {
   background-image: url(assets/image/expand-right-light.png);
+}
+
+.logo-light-icon {
+  background-image: url(assets/image/auth_logo.png);
+}
+
+.insta-icon {
+  background-image: url(assets/image/close_square.png);
+}
+
+.naver-blog-icon {
+  background-image: url(assets/image/close_square.png);
 }
