@@ -1,6 +1,9 @@
 package com.example.boardback.entity;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.Table;
@@ -18,9 +21,10 @@ import lombok.NoArgsConstructor;
 @Table(name = "favorite")
 @IdClass(FavoritePk.class)
 public class FavoriteEntity {
-  @Id
-  private String userEmail;
-  @Id
+
+  @Id @Column(name = "board_number")
   private int boardNumber;
+  @Id @Column(name = "user_email")
+  private String userEmail;
 
 }

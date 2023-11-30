@@ -19,7 +19,7 @@ public class SignUpRequestDto {
   @NotBlank @Email// null이 아니면서 빈문자열이 아니고 공백이 아님
   private String email;
   @NotBlank @Size(min=8, max=20)
-  private String paasword;
+  private String password;
   @NotBlank
   private String nickname;
   @NotBlank @Pattern(regexp="^[0-9]{11,13}$")
