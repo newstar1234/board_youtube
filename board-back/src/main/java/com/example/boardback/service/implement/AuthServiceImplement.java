@@ -5,10 +5,13 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.example.boardback.dto.request.auth.SignInRequestDto;
 import com.example.boardback.dto.request.auth.SignUpRequestDto;
 import com.example.boardback.dto.response.ResponseDto;
+import com.example.boardback.dto.response.auth.SignInResponseDto;
 import com.example.boardback.dto.response.auth.SignUpResponseDto;
 import com.example.boardback.entity.UserEntity;
+import com.example.boardback.provider.Jwtprovider;
 import com.example.boardback.repository.UserRepository;
 import com.example.boardback.service.AuthService;
 
@@ -19,6 +22,7 @@ import lombok.RequiredArgsConstructor;
 public class AuthServiceImplement implements AuthService {
 
   private final UserRepository userRepository;
+  private final Jwtprovider jwtprovider;
 
   private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
@@ -40,8 +44,8 @@ public class AuthServiceImplement implements AuthService {
       if(existedTelNumber) return SignUpResponseDto.duplicateTelNumber();
 
       String password = dto.getPassword();
-      String encodedPassword = passwordEncoder.encode(password);
-      dto.setPassword(encodedPassword);
+      String encodePassword = passwordEncoder.encode(password);
+      dto.setPassword(encodePassword);
 
       UserEntity userEntity = new UserEntity(dto);
       userRepository.save(userEntity);
@@ -52,6 +56,32 @@ public class AuthServiceImplement implements AuthService {
     }
     return SignUpResponseDto.success();
 
+  }
+
+  @Override
+  public ResponseEntity<? super SignInResponseDto> signIn(SignInRequestDto dto) {
+
+    String token = null;
+
+    try {
+
+      String email = dto.getEmail();
+      UserEntity userEntity = userRepository.findByEmail(email);
+      if(userEntity == null) return SignInResponseDto.signInFailed();
+
+      String password = dto.getPassword();
+      String encodedPassword = userEntity.getPassword();
+      boolean isMatched = passwordEncoder.matches(password, encodedPassword);
+      if(!isMatched) return SignInResponseDto.signInFailed();
+
+      token = jwtprovider.create(email);
+      
+    } catch (Exception exception) {
+      exception.printStackTrace();
+      return ResponseDto.databaseError();
+    }
+
+    return SignInResponseDto.success(token);
   }
   
 }

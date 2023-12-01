@@ -5,7 +5,6 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import com.example.boardback.dto.request.auth.SignUpRequestDto;
-import com.example.boardback.dto.response.auth.SignUpResponseDto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

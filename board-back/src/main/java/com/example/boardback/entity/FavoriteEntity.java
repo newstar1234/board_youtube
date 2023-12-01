@@ -22,9 +22,9 @@ import lombok.NoArgsConstructor;
 @IdClass(FavoritePk.class)
 public class FavoriteEntity {
 
-  @Id @Column(name = "board_number")
+  @Id 
   private int boardNumber;
-  @Id @Column(name = "user_email")
+  @Id 
   private String userEmail;
 
 }
