@@ -10,6 +10,8 @@ import com.example.boardback.repository.resultSet.GetBoardResultSet;
 @Repository
 public interface BoardRepository extends JpaRepository<BoardEntity, Integer>{
 
+  boolean existsByBoardNumber(Integer boardNumber);
+
   BoardEntity findByBoardNumber(Integer boardNumber);
  
   // description : ?1 => 는 매개변수 boardNumber의 첫번째를 받겠다는 의미 //
