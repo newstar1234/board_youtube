@@ -8,12 +8,14 @@ import org.springframework.stereotype.Service;
 
 import com.example.boardback.dto.request.board.PostBoardRequestDto;
 import com.example.boardback.dto.response.ResponseDto;
+import com.example.boardback.dto.response.board.GetBoardResponseDto;
 import com.example.boardback.dto.response.board.PostBoardResponseDto;
 import com.example.boardback.entity.BoardEntity;
 import com.example.boardback.entity.ImageEntity;
 import com.example.boardback.repository.BoardRepository;
 import com.example.boardback.repository.ImageRepository;
 import com.example.boardback.repository.UserRepository;
+import com.example.boardback.repository.resultSet.GetBoardResultSet;
 import com.example.boardback.service.BoardService;
 
 import lombok.RequiredArgsConstructor;
@@ -25,6 +27,33 @@ public class BoardServiceImplement implements BoardService {
   private final UserRepository userRepository;
   private final BoardRepository boardRepository;
   private final ImageRepository imageRepository;
+
+   @Override
+  public ResponseEntity<? super GetBoardResponseDto> getBoard(Integer boardNumber) {
+
+    GetBoardResultSet resultSet = null;
+    List<ImageEntity> imageEntities = new ArrayList<>();
+    
+    try {
+      // description : 게시물 번호가 없을 경우 검증 //
+      resultSet = boardRepository.getBoard(boardNumber);
+      if(resultSet == null) return GetBoardResponseDto.noExistBoard();
+
+      imageEntities = imageRepository.findByBoardNumber(boardNumber);
+
+      BoardEntity boardEntity = boardRepository.findByBoardNumber(boardNumber);
+      // description :  조회수 증가 //
+      boardEntity.increaseViewCount();
+      boardRepository.save(boardEntity);
+      
+    } catch (Exception exception) {
+      exception.printStackTrace();
+      return ResponseDto.databaseError();
+    }
+
+    return GetBoardResponseDto.success(resultSet, imageEntities);
+
+  }
 
   @Override
   public ResponseEntity<? super PostBoardResponseDto> postBoard(PostBoardRequestDto dto, String email) {
@@ -59,7 +88,6 @@ public class BoardServiceImplement implements BoardService {
 
     return PostBoardResponseDto.success();
   }
-  
 
 
 }
