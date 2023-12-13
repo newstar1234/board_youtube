@@ -3,6 +3,10 @@
   border-top: 1px solid rgba(0,0,0,0.2);
 }
 
+.emphasis {
+  font-weight: bolder;
+}
+
 .black-button {
   border-radius: 46px;
   width: 95px;
@@ -178,4 +182,20 @@
 
 .more-icon {
   background-image: url(assets/image/more.png);
+}
+
+.favorite-fill-icon {
+  background-image: url(assets/image/favorite_fill.png);
+}
+.favorite-light-icon {
+  background-image: url(assets/image/favorite_light.png);
+}
+.up-light-icon {
+  background-image: url(assets/image/expand_up_light.png);
+}
+.down-light-icon {
+  background-image: url(assets/image/expand_down_light.png);
+}
+.comment-icon {
+  background-image: url(assets/image/chat_light.png);
 }
