@@ -5,6 +5,7 @@ import javax.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -17,6 +18,7 @@ import com.example.boardback.dto.request.board.PostCommentRequestDto;
 import com.example.boardback.dto.response.board.GetBoardResponseDto;
 import com.example.boardback.dto.response.board.GetCommentListResponseDto;
 import com.example.boardback.dto.response.board.GetFavoriteListResponseDto;
+import com.example.boardback.dto.response.board.IncreaseViewCountResponseDto;
 import com.example.boardback.dto.response.board.PostBoardResponseDto;
 import com.example.boardback.dto.response.board.PostCommentResponseDto;
 import com.example.boardback.dto.response.board.PutFavoriteResponseDto;
@@ -83,4 +85,12 @@ public class BoardController {
     return response;
   }
   
+  @GetMapping("/{boardNumber}/increase-view-count")
+  public ResponseEntity<? super IncreaseViewCountResponseDto> increaseViewCount (
+    @PathVariable("boardNumber") Integer boardNumber
+  ) {
+    ResponseEntity<? super IncreaseViewCountResponseDto> response = boardService.inceaseViewCount(boardNumber);
+    return response;
+  }
+
 }
