@@ -3,8 +3,8 @@ import { SignInRequestDto, SignUpRequestDto } from "./request/auth";
 import { SignInResponseDto, SignUpResponseDto } from "./response/auth";
 import { ResponseDto } from "./response";
 import { GetSignInUserResponseDto } from "./response/user";
-import { PostBoardRequestDto } from "./request/board";
-import { PostBoardResponseDto, GetBoardResponseDto, IncreaseViewCountResponseDto, GetFavoriteListResponseDto, GetCommentListResponseDto } from "./response/board";
+import { PostBoardRequestDto, PostCommentRequestDto } from "./request/board";
+import { PostBoardResponseDto, GetBoardResponseDto, IncreaseViewCountResponseDto, GetFavoriteListResponseDto, GetCommentListResponseDto, PutFavoriteResponseDto, PostCommentResponseDto, DeleteBoardResponseDto } from "./response/board";
 
 const DOMAIN = 'http://localhost:4000';
 
@@ -127,12 +127,44 @@ export const postBoardRequest = async (requestBody:PostBoardRequestDto, accessTo
               return result;
 }
 
-// description : 로그인 유저 정보 불러오기 //
-const GET_SIGN_IN_USER_URL = () => `${API_DOMAIN}/user`;
-export const getSignInUserRequest = async (accessToken: string) => {
-  const result = await axios.get(GET_SIGN_IN_USER_URL(), authorization(accessToken))
+// description : 댓글 작성 //
+const POST_COMMENT_URL = (boardNumber : number|string) => `${API_DOMAIN}/board/${boardNumber}/comment`;
+export const postCommentRequest = async (boardNumber : number|string, requestBody:PostCommentRequestDto, accessToken: string) => {
+  const result = await axios.post(POST_COMMENT_URL(boardNumber), requestBody, authorization(accessToken))
+              .then(response => {
+                const responseBody : PostCommentResponseDto = response.data;
+                return responseBody;
+              })
+              .catch(error => {
+                if(!error.response) return null;
+                const responseBody : ResponseDto = error.response.data;
+                return responseBody;
+              })
+              return result;
+}
+
+// description : 좋아요 기능 //
+const PUT_FAVORITE_URL = (boardNumber: number | string) => `${API_DOMAIN}/board/${boardNumber}/favorite`;
+export const putFavoriteRequest = async (boardNumber : number |string, accessToken: string) => {
+  const result = await axios.put(PUT_FAVORITE_URL(boardNumber), {}, authorization(accessToken))
+              .then(response => {
+                const responseBody: PutFavoriteResponseDto = response.data;
+                return responseBody;
+              })
+              .catch(error => {
+                if(!error.response) return null;
+                const responseBody : ResponseDto = error.response.data;
+                return responseBody;
+              })
+              return result;
+}
+
+// description : 게시물 삭제하기 //
+const DELETE_BOARD_URL = (boardNumber : number | string) => `${API_DOMAIN}/board/${boardNumber}`;
+export const deleteBoardRequest = async (boardNumber : number | string, accessToken : string) => {
+  const result = await axios.delete(DELETE_BOARD_URL(boardNumber), authorization(accessToken))
                 .then(response => {
-                  const responseBody : GetSignInUserResponseDto = response.data;
+                  const responseBody : DeleteBoardResponseDto = response.data;
                   return responseBody;
                 })
                 .catch(error => {
@@ -143,6 +175,22 @@ export const getSignInUserRequest = async (accessToken: string) => {
                 return result;
 }
 
+// description : 로그인 유저 정보 불러오기 //
+const GET_SIGN_IN_USER_URL = () => `${API_DOMAIN}/user`;
+export const getSignInUserRequest = async (accessToken: string) => {
+  const result = await axios.get(GET_SIGN_IN_USER_URL(), authorization(accessToken))
+              .then(response => {
+                const responseBody : GetSignInUserResponseDto = response.data;
+                return responseBody;
+              })
+              .catch(error => {
+                if(!error.response) return null;
+                const responseBody : ResponseDto = error.response.data;
+                return responseBody;
+              })
+              return result;
+}
+
 // description : 파일 업로드 //
 const FILE_DOMAIN = `${DOMAIN}/file`;
 
@@ -150,12 +198,12 @@ const FILE_UPLOAD_URL = () => `${FILE_DOMAIN}/upload`;
 const multipartFormData = { headers:{ 'Content-Type' : 'multipart/form-data' } };
 export const fileUploadRequest = async (data:FormData) => {
   const result = await axios.post(FILE_UPLOAD_URL(), data, multipartFormData)
-                .then(response => {
-                  const responseBody : string = response.data;
-                  return responseBody;
-                })
-                .catch(error => {
-                  return null;
-                })
-                return result;
+              .then(response => {
+                const responseBody : string = response.data;
+                return responseBody;
+              })
+              .catch(error => {
+                return null;
+              })
+              return result;
 }
