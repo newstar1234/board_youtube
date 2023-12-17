@@ -106,6 +106,7 @@ export default function BoardDetail() {
       if(!board || !loginUser) return;
       if(loginUser.email !== board.writerEmail) return;
       navigator(BOARD_PATH() + '/' + BOARD_UPDATE_PATH(board.boardNumber)); 
+      console.log('111');
     }
     // event handler : 삭제 버튼 클릭 이벤트 처리 //
     const onDeleteButtonClickHandler = () => {
