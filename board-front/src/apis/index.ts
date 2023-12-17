@@ -3,8 +3,8 @@ import { SignInRequestDto, SignUpRequestDto } from "./request/auth";
 import { SignInResponseDto, SignUpResponseDto } from "./response/auth";
 import { ResponseDto } from "./response";
 import { GetSignInUserResponseDto } from "./response/user";
-import { PostBoardRequestDto, PostCommentRequestDto } from "./request/board";
-import { PostBoardResponseDto, GetBoardResponseDto, IncreaseViewCountResponseDto, GetFavoriteListResponseDto, GetCommentListResponseDto, PutFavoriteResponseDto, PostCommentResponseDto, DeleteBoardResponseDto } from "./response/board";
+import { PatchBoardRequestDto, PostBoardRequestDto, PostCommentRequestDto } from "./request/board";
+import { PostBoardResponseDto, GetBoardResponseDto, IncreaseViewCountResponseDto, GetFavoriteListResponseDto, GetCommentListResponseDto, PutFavoriteResponseDto, PostCommentResponseDto, DeleteBoardResponseDto, PatchBoardResponseDto } from "./response/board";
 
 const DOMAIN = 'http://localhost:4000';
 
@@ -141,6 +141,22 @@ export const postCommentRequest = async (boardNumber : number|string, requestBod
                 return responseBody;
               })
               return result;
+}
+
+// description : 게시물 수정 기능 //
+const PATCH_BOARD_URL = (boardNumber: number | string) => `${API_DOMAIN}/board/${boardNumber}`;
+export const patchBoardReqeust = async (boardNumber : number | string, requestBody : PatchBoardRequestDto, accessToken: string) => {
+  const result = await axios.patch(PATCH_BOARD_URL(boardNumber), requestBody, authorization(accessToken))
+                .then(response => {
+                  const responseBody: PatchBoardResponseDto = response.data;
+                  return responseBody;
+                })
+                .catch(error => {
+                  if(!error.response) return null;
+                  const responseBody : ResponseDto = error.response.data;
+                  return responseBody;
+                })
+                return result;
 }
 
 // description : 좋아요 기능 //
