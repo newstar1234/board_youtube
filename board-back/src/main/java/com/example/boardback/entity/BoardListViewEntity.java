@@ -26,6 +26,6 @@ public class BoardListViewEntity {
   private String writeDatetime;
   private String writerEmail;
   private String writerNickname;
-  private String writerPrifileImage;
+  private String writerProfileImage;
 
 }

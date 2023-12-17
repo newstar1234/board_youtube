@@ -14,15 +14,18 @@ import com.example.boardback.dto.response.board.DeleteBoardResponseDto;
 import com.example.boardback.dto.response.board.GetBoardResponseDto;
 import com.example.boardback.dto.response.board.GetCommentListResponseDto;
 import com.example.boardback.dto.response.board.GetFavoriteListResponseDto;
+import com.example.boardback.dto.response.board.GetLatestBoardListResponseDto;
 import com.example.boardback.dto.response.board.IncreaseViewCountResponseDto;
 import com.example.boardback.dto.response.board.PatchBoardResponseDto;
 import com.example.boardback.dto.response.board.PostBoardResponseDto;
 import com.example.boardback.dto.response.board.PostCommentResponseDto;
 import com.example.boardback.dto.response.board.PutFavoriteResponseDto;
 import com.example.boardback.entity.BoardEntity;
+import com.example.boardback.entity.BoardListViewEntity;
 import com.example.boardback.entity.CommentEntity;
 import com.example.boardback.entity.FavoriteEntity;
 import com.example.boardback.entity.ImageEntity;
+import com.example.boardback.repository.BoardListViewRepository;
 import com.example.boardback.repository.BoardRepository;
 import com.example.boardback.repository.CommentRepository;
 import com.example.boardback.repository.FavoriteRepository;
@@ -44,6 +47,7 @@ public class BoardServiceImplement implements BoardService {
   private final ImageRepository imageRepository;
   private final FavoriteRepository favoriteRepository;
   private final CommentRepository commentRepository;
+  private final BoardListViewRepository boardListViewRepository;
 
    @Override
   public ResponseEntity<? super GetBoardResponseDto> getBoard(Integer boardNumber) {
@@ -108,6 +112,21 @@ public class BoardServiceImplement implements BoardService {
   }
 
   @Override
+  public ResponseEntity<? super GetLatestBoardListResponseDto> getLatestBoardList() {
+
+    List<BoardListViewEntity> boardListViewEntities = new ArrayList<>();
+
+    try {
+      boardListViewEntities = boardListViewRepository.findByOrderByWriteDatetimeDesc();
+      
+    } catch (Exception exception) {
+      exception.printStackTrace();
+      return ResponseDto.databaseError();
+    }
+    return GetLatestBoardListResponseDto.success(boardListViewEntities);
+  }
+
+  @Override
   public ResponseEntity<? super PostBoardResponseDto> postBoard(PostBoardRequestDto dto, String email) {
 
     try {
@@ -141,7 +160,6 @@ public class BoardServiceImplement implements BoardService {
     return PostBoardResponseDto.success();
   }
 
-  
   @Override
   public ResponseEntity<? super PostCommentResponseDto> postComment(PostCommentRequestDto dto, Integer boardNumber, String email) {
 
@@ -285,6 +303,6 @@ public class BoardServiceImplement implements BoardService {
     return DeleteBoardResponseDto.success();
   }
 
-  
+
 
 }
