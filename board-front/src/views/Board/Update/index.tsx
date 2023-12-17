@@ -7,6 +7,7 @@ import { useCookies } from 'react-cookie';
 import { getBoardRequest } from 'apis';
 import { GetBoardResponseDto } from 'apis/response/board';
 import { ResponseDto } from 'apis/response';
+import { convertUrlsToFile } from 'utils';
 
 export default function BoardWrite() {
 
@@ -24,7 +25,6 @@ export default function BoardWrite() {
   const { title, setTitle } = useBoardStore();
   const { content, setContent } = useBoardStore();
   const { boardImageFileList, setBoardImageFileList } = useBoardStore();
-  const { resetBoard } = useBoardStore(); 
   
   // state : 로그인 유저 상태 //
   const { loginUser } = useLoginUserStore();
@@ -37,11 +37,27 @@ export default function BoardWrite() {
 
   // function : 네비게이터 함수 //
   const navigator = useNavigate();
+  
   // function : getBoardResponse 처리 함수 //
   const getBoardResponse = (responseBody : GetBoardResponseDto | ResponseDto | null) => {
     if(!responseBody) return;
-    const { code } = responseBody;
+      const { code } = responseBody;
+      if(code === 'NB') alert('존재하지 않는 게시물 입니다.');
+      if(code === 'DBE') alert('데이터 베이스 오류입니다.');
+      if(code !== 'SU') {
+        navigator(MAIN_PATH());
+        return;
+      }
+      const { title, content, boardImageList, writerEmail } = responseBody as GetBoardResponseDto;
+      setTitle(title);
+      setContent(content);
+      setImageUrls(boardImageList);
+      convertUrlsToFile(boardImageList).then(boardImageFileList => setBoardImageFileList(boardImageFileList) );
 
+      if(!loginUser || loginUser.email !== writerEmail) {
+        navigator(MAIN_PATH());
+        return;
+      }
   }
   
   // event handler : 제목 변경 이벤트 처리 //
