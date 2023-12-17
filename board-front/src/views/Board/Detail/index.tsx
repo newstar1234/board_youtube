@@ -52,7 +52,7 @@ export default function BoardDetail() {
     const getWriteDatetimeFormat = () => {
       if(!board) return '';
       const date = dayjs(board.writeDatetime);
-      return date.format('YYYY. MM. DD');
+      return date.format('YY. MM. DD hh:mm:ss');
     }
 
     // function : get board response 처리 함수 //

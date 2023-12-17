@@ -33,8 +33,8 @@ public class CommentEntity {
   public CommentEntity(PostCommentRequestDto dto, Integer boardNumber, String email) {
 
     Date now = Date.from(Instant.now());
-    SimpleDateFormat SimpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-    String writeDatetime = SimpleDateFormat.format(now);
+    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    String writeDatetime = simpleDateFormat.format(now);
 
     this.content = dto.getContent();
     this.writeDatetime = writeDatetime;
