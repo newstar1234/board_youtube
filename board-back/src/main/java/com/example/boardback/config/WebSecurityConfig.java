@@ -36,7 +36,7 @@ public class WebSecurityConfig {
               .httpBasic().disable()
               .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
               .authorizeRequests()
-              .antMatchers("/", "/api/v1/auth/**", "/api/vi/search/**", "/file/**").permitAll()
+              .antMatchers("/", "/api/v1/auth/**", "/api/v1/search/**", "/file/**").permitAll()
               .antMatchers(HttpMethod.GET, "/api/v1/board/**", "/api/v1/user/*").permitAll()
               .anyRequest().authenticated().and()
               .exceptionHandling().authenticationEntryPoint(new FailedAutheicationEntryPoint());
