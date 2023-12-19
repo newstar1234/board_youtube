@@ -4,7 +4,8 @@ import { SignInResponseDto, SignUpResponseDto } from "./response/auth";
 import { ResponseDto } from "./response";
 import { GetSignInUserResponseDto } from "./response/user";
 import { PatchBoardRequestDto, PostBoardRequestDto, PostCommentRequestDto } from "./request/board";
-import { PostBoardResponseDto, GetBoardResponseDto, IncreaseViewCountResponseDto, GetFavoriteListResponseDto, GetCommentListResponseDto, PutFavoriteResponseDto, PostCommentResponseDto, DeleteBoardResponseDto, PatchBoardResponseDto } from "./response/board";
+import { PostBoardResponseDto, GetBoardResponseDto, IncreaseViewCountResponseDto, GetFavoriteListResponseDto, GetCommentListResponseDto, PutFavoriteResponseDto, PostCommentResponseDto, DeleteBoardResponseDto, PatchBoardResponseDto, GetLatestBaordListResponseDto, GetTop3BoardListResponseDto } from "./response/board";
+import { GetPopularListResponseDto } from "./response/search";
 
 const DOMAIN = 'http://localhost:4000';
 
@@ -61,6 +62,38 @@ export const getBoardRequest = async (boardNumber : number | string) => {
                 return responseBody;
               })
               return result;
+}
+
+// description: 최신 게시물 불러오기//
+const GET_LATEST_BOARD_LIST_URL = () => `${API_DOMAIN}/board/latest-list`;
+export const getLatestBoardListRequest = async () => {
+  const result = await axios.get(GET_LATEST_BOARD_LIST_URL())
+            .then(response => {
+              const responseBody : GetLatestBaordListResponseDto = response.data;
+              return responseBody;
+            })
+            .catch(error => {
+              if(!error.response.data) return null;
+              const responseBody : ResponseDto = error.response.data;
+              return responseBody;
+            })
+            return result;
+}
+
+// description: top3 게시물 불러오기//
+const GET_TOP_3_BOARD_LIST_URL  = () => `${API_DOMAIN}/board/top-3`;
+export const getTop3BoardListRequest = async () => {
+  const result = await axios.get(GET_TOP_3_BOARD_LIST_URL())
+            .then(response => {
+              const responseBody : GetTop3BoardListResponseDto = response.data;
+              return responseBody;
+            })
+            .catch(error => {
+              if(!error.response.data) return null;
+              const responseBody : ResponseDto = error.response.data;
+              return responseBody;
+            })
+            return result;
 }
 
 // description : 게시물 조회수 증가 //
@@ -189,6 +222,22 @@ export const deleteBoardRequest = async (boardNumber : number | string, accessTo
                   return responseBody;
                 })
                 return result;
+}
+
+// description : 인기 검색어 리스트 불러오기 //
+const GET_POPULAR_LIST_URL = () => `${API_DOMAIN}/search/popular-list`;
+export const getPopularListReqeust = async () => {
+  const result = await axios.get(GET_POPULAR_LIST_URL())
+              .then(response => {
+                const responseBody : GetPopularListResponseDto = response.data;
+                return responseBody;
+              })
+              .catch(error => {
+                if(!error.response) return null;
+                const responseBody : ResponseDto = error.response.data;
+                return responseBody;
+              })
+              return result;
 }
 
 // description : 로그인 유저 정보 불러오기 //
