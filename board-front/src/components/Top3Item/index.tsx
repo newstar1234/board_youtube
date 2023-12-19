@@ -3,6 +3,7 @@ import './style.css';
 import defaultPrifileImage from 'assets/image/urshifu.jpg';
 import { BoardListItem } from 'types/interface';
 import {useNavigate} from 'react-router-dom';
+import { BOARD_DETAIL_PATH, BOARD_PATH } from 'constant';
 
 interface Props {
   top3ListItem : BoardListItem
@@ -14,11 +15,11 @@ export default function Top3Item({top3ListItem} : Props) {
   const { boardNumber, title, content, boardTitleImage, favoriteCount, commentCount, viewCount, writeDatetime, writerNickname, writerProfileImage } = top3ListItem;
 
   // function //
-  // const navigator = useNavigate();
+  const navigator = useNavigate();
 
   // event handler //
   const onClickHandler = () => {
-    // navigator(boardNumber);
+    navigator(BOARD_PATH() + '/' + BOARD_DETAIL_PATH(boardNumber));
   }
 
   return (
