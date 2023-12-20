@@ -16,6 +16,7 @@ import com.example.boardback.dto.response.board.PatchBoardResponseDto;
 import com.example.boardback.dto.response.board.PostBoardResponseDto;
 import com.example.boardback.dto.response.board.PostCommentResponseDto;
 import com.example.boardback.dto.response.board.PutFavoriteResponseDto;
+import com.example.boardback.dto.response.search.GetSearchBoardListResponseDto;
 
 public interface BoardService {
 
@@ -24,6 +25,7 @@ public interface BoardService {
   ResponseEntity<? super GetCommentListResponseDto> getCommentList(Integer boardNumber);
   ResponseEntity<? super GetLatestBoardListResponseDto> getLatestBoardList();
   ResponseEntity<? super GetTop3BoardListResponseDto> getTop3BoardList();
+  ResponseEntity<? super GetSearchBoardListResponseDto> getSearchBoardList(String searchWord, String preSearchWord);
 
   
   ResponseEntity<? super PostBoardResponseDto> postBoard(PostBoardRequestDto dto, String email); 
