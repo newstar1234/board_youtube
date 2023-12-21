@@ -4,8 +4,8 @@ import { SignInResponseDto, SignUpResponseDto } from "./response/auth";
 import { ResponseDto } from "./response";
 import { GetSignInUserResponseDto } from "./response/user";
 import { PatchBoardRequestDto, PostBoardRequestDto, PostCommentRequestDto } from "./request/board";
-import { PostBoardResponseDto, GetBoardResponseDto, IncreaseViewCountResponseDto, GetFavoriteListResponseDto, GetCommentListResponseDto, PutFavoriteResponseDto, PostCommentResponseDto, DeleteBoardResponseDto, PatchBoardResponseDto, GetLatestBaordListResponseDto, GetTop3BoardListResponseDto } from "./response/board";
-import { GetPopularListResponseDto } from "./response/search";
+import { PostBoardResponseDto, GetBoardResponseDto, IncreaseViewCountResponseDto, GetFavoriteListResponseDto, GetCommentListResponseDto, PutFavoriteResponseDto, PostCommentResponseDto, DeleteBoardResponseDto, PatchBoardResponseDto, GetLatestBaordListResponseDto, GetTop3BoardListResponseDto, GetSearchBoardListResponseDto } from "./response/board";
+import { GetPopularListResponseDto, GetRelationListResponseDto } from "./response/search";
 
 const DOMAIN = 'http://localhost:4000';
 
@@ -94,6 +94,23 @@ export const getTop3BoardListRequest = async () => {
               return responseBody;
             })
             return result;
+}
+
+// description : 검색 게시물 리스트 불러오기 //
+const GET_SEARCH_BOARD_LIST_URL = (searchWord : string, preSearchWord: string | null) => `${API_DOMAIN}/board/search-list/${searchWord}${preSearchWord ? '/' + preSearchWord : ''}`;
+export const getSearchBoardListRequest = async (searchWord : string, preSearchWord: string | null) => {
+  const result = await axios.get(GET_SEARCH_BOARD_LIST_URL(searchWord, preSearchWord))
+            .then(response => {
+              const responseBody : GetSearchBoardListResponseDto = response.data;
+              return responseBody;
+            })
+            .catch(error => {
+              if(!error.response.data) return null;
+              const responseBody : ResponseDto = error.response.data;
+              return responseBody;
+            })
+            return result;
+
 }
 
 // description : 게시물 조회수 증가 //
@@ -230,6 +247,22 @@ export const getPopularListReqeust = async () => {
   const result = await axios.get(GET_POPULAR_LIST_URL())
               .then(response => {
                 const responseBody : GetPopularListResponseDto = response.data;
+                return responseBody;
+              })
+              .catch(error => {
+                if(!error.response) return null;
+                const responseBody : ResponseDto = error.response.data;
+                return responseBody;
+              })
+              return result;
+}
+
+// description : 관련 검색어 리스트 불러오기 //
+const GET_RELATION_LIST_URL = (searchWord : string) => `${API_DOMAIN}/search/${searchWord}/relation-list`;
+export const getRelationListRequest = async (searchWord : string) => {
+  const result = await axios.get(GET_RELATION_LIST_URL(searchWord))
+              .then(response => {
+                const responseBody : GetRelationListResponseDto = response.data;
                 return responseBody;
               })
               .catch(error => {
