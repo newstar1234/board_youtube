@@ -11,6 +11,9 @@ import com.example.boardback.dto.object.BoardListItem;
 import com.example.boardback.dto.response.ResponseDto;
 import com.example.boardback.entity.BoardListViewEntity;
 
+import lombok.Getter;
+
+@Getter
 public class GetUserBoardListResponseDto extends ResponseDto {
   
   private List<BoardListItem> userBoardList;

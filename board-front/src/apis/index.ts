@@ -2,10 +2,11 @@ import axios from "axios";
 import { SignInRequestDto, SignUpRequestDto } from "./request/auth";
 import { SignInResponseDto, SignUpResponseDto } from "./response/auth";
 import { ResponseDto } from "./response";
-import { GetSignInUserResponseDto } from "./response/user";
+import { GetSignInUserResponseDto, GetUserResponseDto, PatchNicknameResponseDto, PatchProfileImageResponseDto } from "./response/user";
 import { PatchBoardRequestDto, PostBoardRequestDto, PostCommentRequestDto } from "./request/board";
-import { PostBoardResponseDto, GetBoardResponseDto, IncreaseViewCountResponseDto, GetFavoriteListResponseDto, GetCommentListResponseDto, PutFavoriteResponseDto, PostCommentResponseDto, DeleteBoardResponseDto, PatchBoardResponseDto, GetLatestBaordListResponseDto, GetTop3BoardListResponseDto, GetSearchBoardListResponseDto } from "./response/board";
+import { PostBoardResponseDto, GetBoardResponseDto, IncreaseViewCountResponseDto, GetFavoriteListResponseDto, GetCommentListResponseDto, PutFavoriteResponseDto, PostCommentResponseDto, DeleteBoardResponseDto, PatchBoardResponseDto, GetLatestBaordListResponseDto, GetTop3BoardListResponseDto, GetSearchBoardListResponseDto, GetUserBoardListResponseDto } from "./response/board";
 import { GetPopularListResponseDto, GetRelationListResponseDto } from "./response/search";
+import { PatchNicknameRequestDto, PatchProfileImageRequestDto } from "./request/user";
 
 const DOMAIN = 'http://localhost:4000';
 
@@ -110,7 +111,22 @@ export const getSearchBoardListRequest = async (searchWord : string, preSearchWo
               return responseBody;
             })
             return result;
+}
 
+// description : 로그인 유저 게시물 리스트 불러오기 //
+const GET_USER_BOARD_LIST_URL = (email:string) => `${API_DOMAIN}/board/user-board-list/${email}`;
+export const getUserBoardListRequest = async (email:string) => {
+  const result = await axios.get(GET_USER_BOARD_LIST_URL(email))
+              .then(response => {
+                const responseBody : GetUserBoardListResponseDto = response.data;
+                return responseBody;
+              })
+              .catch(error => {
+                if(!error.response) return null;
+                const responseBody : ResponseDto = error.response.data;
+                return responseBody;
+              })
+              return result;
 }
 
 // description : 게시물 조회수 증가 //
@@ -273,6 +289,22 @@ export const getRelationListRequest = async (searchWord : string) => {
               return result;
 }
 
+// description : 로그인 유저 불러오기 //
+const GET_USER_URL = (email:string) => `${API_DOMAIN}/user/${email}`;
+export const getUserRequest = async (email: string) => {
+  const result = await axios.get(GET_USER_URL(email))
+              .then(response => {
+                const responseBody : GetUserResponseDto = response.data;
+                return responseBody;
+              })
+              .catch(error => {
+                if(!error.response) return null;
+                const responseBody : ResponseDto = error.response.data;
+                return responseBody;
+              })
+              return result;
+} 
+
 // description : 로그인 유저 정보 불러오기 //
 const GET_SIGN_IN_USER_URL = () => `${API_DOMAIN}/user`;
 export const getSignInUserRequest = async (accessToken: string) => {
@@ -288,6 +320,39 @@ export const getSignInUserRequest = async (accessToken: string) => {
               })
               return result;
 }
+
+// description : 닉네임 수정 //
+const PATCH_NICKNAME_URL = () => `${API_DOMAIN}/user/nickname`;
+export const patchNicknameRequest = async (requestBody: PatchNicknameRequestDto, accessToken: string) => {
+  const result = await axios.patch(PATCH_NICKNAME_URL(), requestBody, authorization(accessToken))
+              .then(response => {
+                const responseBody : PatchNicknameResponseDto = response.data;
+                return responseBody;
+              })
+              .catch(error => {
+                if(!error.response) return null;
+                const responseBody : ResponseDto = error.response.data;
+                return responseBody;
+              })
+              return result;
+}
+
+// description : 프로필 이미지 수정 //
+const PATCH_PROFILE_IMAGE_URL = () => `${API_DOMAIN}/user/profile-image`;
+export const patchProfileImageRequest = async (requestBody: PatchProfileImageRequestDto, accessToken: string) => {
+  const result = await axios.patch(PATCH_PROFILE_IMAGE_URL(), requestBody, authorization(accessToken))
+              .then(response => {
+                const responseBody : PatchProfileImageResponseDto = response.data;
+                return responseBody;
+              })
+              .catch(error => {
+                if(!error.response) return null;
+                const responseBody : ResponseDto = error.response.data;
+                return responseBody;
+              })
+              return result;
+}
+
 
 // description : 파일 업로드 //
 const FILE_DOMAIN = `${DOMAIN}/file`;
