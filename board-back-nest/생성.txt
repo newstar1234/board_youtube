@@ -1,0 +1,11 @@
+(기능별 모듈) - (DB테이블)
+auth
+board
+file
+search
+user
+
+data-access
+
+직접 -> 폴더, 모듈 클래스(module), 컨트롤러 클래스, 서비스 클래스 등을 직접 생성
+nest cli -> nest g 생성할것 이름 옵션 

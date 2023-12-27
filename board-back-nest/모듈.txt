@@ -1,0 +1,10 @@
+spring - webMVC / validation
+
+spring boot validation -> class-validator class-transformer
+spring boot data-jpa -> typeorm @nestjs/typeorm
+spring boot security -> passport passport-jwt bcryptjs @nestjs/passport
+spring boot connector-j -> mysql2
+spring boot jjwt ... -> @nestjs/jwt
+spring boot application.propertise (환경변수) -> @nestjs/config dotenv
+
+@types/passport-jwt @types/bcrypt
