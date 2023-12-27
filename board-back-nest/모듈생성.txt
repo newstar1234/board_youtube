@@ -1,0 +1,11 @@
+(기능별 모듈) - (DB테이블)
+auth
+board
+file
+search
+user
+
+data-access
+//nest g resource(res) (폴더명) --no-spec => mo,co,s 한번에 생성//
+직접 -> 폴더, 모듈 클래스(module), 컨트롤러 클래스(co), 서비스 클래스(s) 등을 직접 생성 / spec 생성 안하려면 옵션에 --no-spec
+nest cli -> nest g 생성할것 이름 옵션 

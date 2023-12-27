@@ -3,7 +3,7 @@ import { config } from 'dotenv';
 
 config();
 
-export const typeORMMYsqlConfig: TypeOrmModuleOptions = {
+const typeORMMYsqlConfig: TypeOrmModuleOptions = {
   type: 'mysql',
   host: process.env.DATABASE_HOST,
   port: parseInt(process.env.DATABASE_PORT),
@@ -12,4 +12,6 @@ export const typeORMMYsqlConfig: TypeOrmModuleOptions = {
   database: process.env.DATABASE_NAME,
   entities: [__dirname + '/../**/*.entity.{js,ts}'],
   synchronize: false
-}
+};
+
+export default typeORMMYsqlConfig;

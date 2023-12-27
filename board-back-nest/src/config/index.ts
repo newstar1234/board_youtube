@@ -1,3 +1,5 @@
-import { typeORMMYsqlConfig } from "./typeorm.mysql.config";
+import typeORMMYsqlConfig from "./typeorm.mysql.config";
 
-export { typeORMMYsqlConfig }
+export { 
+  typeORMMYsqlConfig 
+}
