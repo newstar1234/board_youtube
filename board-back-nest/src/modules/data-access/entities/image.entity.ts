@@ -6,9 +6,9 @@ import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 export default class ImageEntity {
 
   @PrimaryGeneratedColumn({
-    name:'board_number'
+    name:'sequence'
   })
-  boardNumber: number;
+  sequence: number;
 
   @Column({
     name:'image'
@@ -16,8 +16,8 @@ export default class ImageEntity {
   image: string;
 
   @Column({
-    name:'sequence'
+    name:'board_number'
   })
-  sequence: number;
+  boardNumber: number;
 
 }
