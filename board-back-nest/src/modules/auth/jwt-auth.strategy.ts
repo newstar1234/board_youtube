@@ -21,6 +21,7 @@ export default class JwtAuthStrategy extends PassportStrategy(Strategy) {
   //   return email;
   // }
 
+  // 접근 주체 정보 반환 // @AuthenticationPrincipal
   async validate({ sub } :any) {
     return sub;
   }
