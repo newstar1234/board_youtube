@@ -8,3 +8,9 @@ spring boot jjwt ... -> @nestjs/jwt
 spring boot application.propertise (환경변수) -> @nestjs/config dotenv
 
 @types/passport-jwt @types/bcrypt
+
+23/12/31
+
+multer @nest/platform-express uuid @nestjs/serve-static
+
+@types/multer
