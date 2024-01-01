@@ -36,4 +36,14 @@ export default class ImageRepository {
       ResponseDto.databaseError();
     }
   }
+
+  async findByBoardNumber(boardNumber: number) {
+    try {
+      const imageEntities = await this.repository.find({ where: {boardNumber} });
+      return imageEntities;
+    } catch (exception) {
+      this.logger.error(exception.message);
+      ResponseDto.databaseError();
+    }
+  }
 }
