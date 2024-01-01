@@ -46,4 +46,14 @@ export default class ImageRepository {
       ResponseDto.databaseError();
     }
   }
+
+  async deleteByBoardNumber(boardNumber: number) {
+    try {
+      await this.repository.delete({ boardNumber });
+    } catch (exception) {
+      this.logger.error(exception.message);
+      ResponseDto.databaseError();
+    }
+  }
+
 }

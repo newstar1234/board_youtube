@@ -45,6 +45,16 @@ export default class BoardRepository {
     }
   }
 
+  async findByBoardNumber(boardNumber: number) {
+    try {
+      const boardEntity = await this.repository.findOne({ where: {boardNumber} });
+      return boardEntity;  // return 잘 보기!! //
+    } catch (exception) {
+      this.logger.error(exception.message);
+      ResponseDto.databaseError();
+    }
+  }
+
   async getBoard(boardNumber: number) {
     try {
       const resultSet = await this.dataSource

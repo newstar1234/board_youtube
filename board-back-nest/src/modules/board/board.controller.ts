@@ -1,9 +1,9 @@
-import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
 import { BoardService } from './board.service';
-import { PostBoardRequestDto } from './dto/request';
+import { PatchBoardRequestDto, PostBoardRequestDto } from './dto/request';
 import JwtAuthGuard from 'guard/jwt-auth.guard';
 import { GetSignInUser } from 'decorator';
-import { GetBoardResponseDto, PostBoardResponseDto } from './dto/response';
+import { GetBoardResponseDto, PatchBoardResponseDto, PostBoardResponseDto } from './dto/response';
 
 @Controller('/api/v1/board')
 export class BoardController {
@@ -24,6 +24,17 @@ export class BoardController {
     @Param('boardNumber') boardNumber: number
   ) :Promise<GetBoardResponseDto> {
     const response = this.boardService.getBoard(boardNumber);
+    return response;
+  }
+
+  @Patch('/:boardNumber')
+  @UseGuards(JwtAuthGuard)
+  patchBoard(
+    @Body() requestBody : PatchBoardRequestDto,
+    @Param('boardNumber') boardNumber:number,
+    @GetSignInUser() email: string
+  ):Promise<PatchBoardResponseDto> {
+    const response = this.boardService.patchBoard(requestBody, boardNumber, email);
     return response;
   }
 

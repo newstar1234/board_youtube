@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { BoardRepository, ImageRepository, UserRepository } from 'modules/data-access/repository';
-import { PostBoardRequestDto } from './dto/request';
-import { GetBoardResponseDto, PostBoardResponseDto } from './dto/response';
+import { PatchBoardRequestDto, PostBoardRequestDto } from './dto/request';
+import { GetBoardResponseDto, PatchBoardResponseDto, PostBoardResponseDto } from './dto/response';
 
 @Injectable()
 export class BoardService {
@@ -12,7 +12,7 @@ export class BoardService {
     private readonly imageRepository: ImageRepository
   ) {}
 
-  async postBoard(dto:PostBoardRequestDto, email:string) : Promise<PostBoardResponseDto> {
+  async postBoard(dto:PostBoardRequestDto, email:string): Promise<PostBoardResponseDto> {
 
     const isExistUser = await this.userRepository.existsByEmail(email);
     if(!isExistUser) PostBoardResponseDto.noExistUser();
@@ -29,13 +29,39 @@ export class BoardService {
 
   }
 
-  async getBoard(boardNumber: number) :Promise<GetBoardResponseDto> {
+  async getBoard(boardNumber: number): Promise<GetBoardResponseDto> {
     const resultSet = await this.boardRepository.getBoard(boardNumber);
     if(!resultSet) GetBoardResponseDto.noExistBoard();
 
     const imageEntities = await this.imageRepository.findByBoardNumber(boardNumber);
 
     return GetBoardResponseDto.success(resultSet, imageEntities);
+  }
+
+  async patchBoard(dto: PatchBoardRequestDto, boardNumber:number, email:string): Promise<PatchBoardResponseDto> {
+    
+    const isExistUser = await this.userRepository.existsByEmail(email);
+    if(!isExistUser) PatchBoardResponseDto.noExistUser();
+    
+    const boardEntity = await this.boardRepository.findByBoardNumber(boardNumber);
+    if(!boardEntity) PatchBoardResponseDto.noExistBoard();
+
+    const { writerEmail } = boardEntity;
+    const isWriter = writerEmail === email;
+    if(!isWriter) PatchBoardResponseDto.noPermission();
+
+    boardEntity.title = dto.title;
+    boardEntity.content = dto.content;
+    await this.boardRepository.save(boardEntity);
+
+    await this.imageRepository.deleteByBoardNumber(boardNumber);
+
+    const { boardImageList } = dto;
+    const imageEntities = this.imageRepository.createAll(boardImageList, boardNumber);
+    await this.imageRepository.saveAll(imageEntities);
+
+    return PatchBoardResponseDto.success();
+
   }
 
 }
