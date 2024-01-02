@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { BoardRepository, CommentRepository, FavoriteRepository, ImageRepository, UserRepository } from 'modules/data-access/repository';
 import { PatchBoardRequestDto, PostBoardRequestDto, PostCommentRequestDto } from './dto/request';
-import { GetBoardResponseDto, GetCommentListResponseDto, PatchBoardResponseDto, PostBoardResponseDto, PostCommentResponseDto, PutFavoriteResponseDto } from './dto/response';
+import { GetBoardResponseDto, GetCommentListResponseDto, GetFavoriteListResponseDto, PatchBoardResponseDto, PostBoardResponseDto, PostCommentResponseDto, PutFavoriteResponseDto } from './dto/response';
 
 @Injectable()
 export class BoardService {
@@ -64,6 +64,17 @@ export class BoardService {
     const resultSets = await this.commentRepository.getCommentList(boardNumber);
 
     return GetCommentListResponseDto.success(resultSets);
+  }
+
+  async getFavoriteList(boardNumber:number):Promise<GetFavoriteListResponseDto> {
+
+    const isExistBoard = this.boardRepository.existsByBoardNumber(boardNumber);
+    if(!isExistBoard) GetFavoriteListResponseDto.noExistBoard();
+
+    const resultSets = await this.favoriteRepository.getFavoriteList(boardNumber);
+
+    return GetFavoriteListResponseDto.success(resultSets);
+
   }
 
   async patchBoard(dto: PatchBoardRequestDto, boardNumber:number, email:string): Promise<PatchBoardResponseDto> {

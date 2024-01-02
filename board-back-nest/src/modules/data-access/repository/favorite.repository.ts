@@ -3,6 +3,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { FavoriteEntity } from "../entities";
 import { DataSource, Repository } from "typeorm";
 import { ResponseDto } from "types/classes";
+import { GetFavoriteListResultSet } from "../entities/result-set";
 
 @Injectable()
 export default class FavoriteRepository {
@@ -38,6 +39,24 @@ export default class FavoriteRepository {
     try {
       const result = await this.repository.exist({ where: {boardNumber,userEmail} });
       return result;
+    } catch (exception) {
+      this.logger.error(exception.message);
+      ResponseDto.databaseError();
+    }
+  }
+
+  async getFavoriteList(boardNumber: number) {
+    try {
+      const resultSets = await this.dataSource
+                .createQueryBuilder()
+                .select('U.email', 'email')
+                .addSelect('U.nickname', 'nickname')
+                .addSelect('U.profile_image', 'profileImage')
+                .from('favorite', 'F')
+                .innerJoin('user', 'U', 'F.user_email = U.email')
+                .where('F.board_number = :boardNumber', {boardNumber})
+                .getRawMany();
+                return resultSets as GetFavoriteListResultSet[];
     } catch (exception) {
       this.logger.error(exception.message);
       ResponseDto.databaseError();
