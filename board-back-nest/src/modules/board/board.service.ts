@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { BoardRepository, CommentRepository, ImageRepository, UserRepository } from 'modules/data-access/repository';
+import { BoardRepository, CommentRepository, FavoriteRepository, ImageRepository, UserRepository } from 'modules/data-access/repository';
 import { PatchBoardRequestDto, PostBoardRequestDto, PostCommentRequestDto } from './dto/request';
-import { GetBoardResponseDto, GetCommentListResponseDto, PatchBoardResponseDto, PostBoardResponseDto, PostCommentResponseDto } from './dto/response';
+import { GetBoardResponseDto, GetCommentListResponseDto, PatchBoardResponseDto, PostBoardResponseDto, PostCommentResponseDto, PutFavoriteResponseDto } from './dto/response';
 
 @Injectable()
 export class BoardService {
@@ -10,7 +10,8 @@ export class BoardService {
     private readonly userRepository: UserRepository,
     private readonly boardRepository: BoardRepository,
     private readonly imageRepository: ImageRepository,
-    private readonly commentRepository: CommentRepository
+    private readonly commentRepository: CommentRepository,
+    private readonly favoriteRepository: FavoriteRepository
   ) {}
 
   async postBoard(dto:PostBoardRequestDto, email:string): Promise<PostBoardResponseDto> {
@@ -88,6 +89,31 @@ export class BoardService {
     await this.imageRepository.saveAll(imageEntities);
 
     return PatchBoardResponseDto.success();
+
+  }
+
+  async putFavorite(boardNumber:number, email:string):Promise<PutFavoriteResponseDto> {
+
+    const isExistUser = await this.userRepository.existsByEmail(email);
+    if(!isExistUser) PutFavoriteResponseDto.noExistUser();
+
+    const boardEntity = await this.boardRepository.findByBoardNumber(boardNumber);
+    if(!boardEntity) PutFavoriteResponseDto.noExistBoard();
+
+    const isExistFavorite = await this.favoriteRepository.existsByBoardNumberAndUserEmail(boardNumber, email);
+    if(isExistFavorite) {
+      await this.favoriteRepository.deleteByBoardNumberAndUserEmail(boardNumber,email);
+      boardEntity.favoriteCount--;  // true일때 있으니까 카운트 1 감소
+    }
+    else {
+      const favoriteEntity = this.favoriteRepository.create(boardNumber, email);
+      await this.favoriteRepository.save(favoriteEntity);
+      boardEntity.favoriteCount++;  // false일떄 없으니까 카운트 1 증가 
+    }
+
+    await this.boardRepository.save(boardEntity);
+
+    return PutFavoriteResponseDto.success();
 
   }
 

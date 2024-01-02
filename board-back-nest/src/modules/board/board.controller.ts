@@ -1,9 +1,9 @@
-import { Body, Controller, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post, Put, UseGuards } from '@nestjs/common';
 import { BoardService } from './board.service';
 import { PatchBoardRequestDto, PostBoardRequestDto, PostCommentRequestDto } from './dto/request';
 import JwtAuthGuard from 'guard/jwt-auth.guard';
 import { GetSignInUser } from 'decorator';
-import { GetBoardResponseDto, GetCommentListResponseDto, PatchBoardResponseDto, PostBoardResponseDto, PostCommentResponseDto } from './dto/response';
+import { GetBoardResponseDto, GetCommentListResponseDto, PatchBoardResponseDto, PostBoardResponseDto, PostCommentResponseDto, PutFavoriteResponseDto } from './dto/response';
 
 @Controller('/api/v1/board')
 export class BoardController {
@@ -54,6 +54,16 @@ export class BoardController {
     @GetSignInUser() email: string
   ):Promise<PatchBoardResponseDto> {
     const response = this.boardService.patchBoard(requestBody, boardNumber, email);
+    return response;
+  }
+
+  @Put('/:boardNumber/favorite')
+  @UseGuards(JwtAuthGuard)
+  putFavorite(
+    @Param('boardNumber') boardNumber:number,
+    @GetSignInUser() email: string
+  ):Promise<PutFavoriteResponseDto> {
+    const response = this.boardService.putFavorite(boardNumber, email);
     return response;
   }
 
