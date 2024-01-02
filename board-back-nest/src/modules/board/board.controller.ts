@@ -3,7 +3,7 @@ import { BoardService } from './board.service';
 import { PatchBoardRequestDto, PostBoardRequestDto, PostCommentRequestDto } from './dto/request';
 import JwtAuthGuard from 'guard/jwt-auth.guard';
 import { GetSignInUser } from 'decorator';
-import { GetBoardResponseDto, PatchBoardResponseDto, PostBoardResponseDto, PostCommentResponseDto } from './dto/response';
+import { GetBoardResponseDto, GetCommentListResponseDto, PatchBoardResponseDto, PostBoardResponseDto, PostCommentResponseDto } from './dto/response';
 
 @Controller('/api/v1/board')
 export class BoardController {
@@ -35,6 +35,14 @@ export class BoardController {
     @Param('boardNumber') boardNumber: number
   ) :Promise<GetBoardResponseDto> {
     const response = this.boardService.getBoard(boardNumber);
+    return response;
+  }
+
+  @Get('/:boardNumber/comment-list')
+  getCommentList(
+    @Param('boardNumber') boardNumber:number
+  ):Promise<GetCommentListResponseDto> {
+    const response = this.boardService.getCommentList(boardNumber);
     return response;
   }
 

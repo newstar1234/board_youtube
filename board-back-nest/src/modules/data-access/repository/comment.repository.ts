@@ -5,6 +5,7 @@ import { DataSource, Repository } from "typeorm";
 import { PostCommentRequestDto } from "modules/board/dto/request";
 import { ResponseDto } from "types/classes";
 import { nowDatetime } from "utils";
+import { GetCommentListResultSet } from "../entities/result-set";
 
 @Injectable()
 export default class CommentRepository {
@@ -35,6 +36,26 @@ export default class CommentRepository {
   async save(commentEntity: CommentEntity) {
     try {
       return await this.repository.save(commentEntity);
+    } catch (exception) {
+      this.logger.error(exception.message);
+      ResponseDto.databaseError();
+    }
+  }
+
+  async getCommentList(boardNumber:number) {
+    try {
+      const resultSets = await this.dataSource
+              .createQueryBuilder()
+              .select('U.nickname' , 'nickname')
+              .addSelect('U.profile_image' , 'profileImage')
+              .addSelect('C.write_datetime' , 'writeDatetime')
+              .addSelect('C.content' , 'content')
+              .from('comment' , 'C')
+              .innerJoin('user' , 'U' , 'C.user_email = U.email')
+              .where('C.board_number = :boardNumber', {boardNumber})
+              .orderBy('C.write_datetime', 'DESC')
+              .getRawMany();
+              return resultSets as GetCommentListResultSet[];
     } catch (exception) {
       this.logger.error(exception.message);
       ResponseDto.databaseError();
