@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { BoardRepository, ImageRepository, UserRepository } from 'modules/data-access/repository';
-import { PatchBoardRequestDto, PostBoardRequestDto } from './dto/request';
-import { GetBoardResponseDto, PatchBoardResponseDto, PostBoardResponseDto } from './dto/response';
+import { BoardRepository, CommentRepository, ImageRepository, UserRepository } from 'modules/data-access/repository';
+import { PatchBoardRequestDto, PostBoardRequestDto, PostCommentRequestDto } from './dto/request';
+import { GetBoardResponseDto, PatchBoardResponseDto, PostBoardResponseDto, PostCommentResponseDto } from './dto/response';
 
 @Injectable()
 export class BoardService {
@@ -9,7 +9,8 @@ export class BoardService {
   constructor(
     private readonly userRepository: UserRepository,
     private readonly boardRepository: BoardRepository,
-    private readonly imageRepository: ImageRepository
+    private readonly imageRepository: ImageRepository,
+    private readonly commentRepository: CommentRepository
   ) {}
 
   async postBoard(dto:PostBoardRequestDto, email:string): Promise<PostBoardResponseDto> {
@@ -27,6 +28,23 @@ export class BoardService {
 
     return PostBoardResponseDto.success();
 
+  }
+
+  async postComment(dto:PostCommentRequestDto, boardNumber: number, email:string):Promise<PostCommentResponseDto> {
+    
+    const isExistUser = await this.userRepository.existsByEmail(email);
+    if(!isExistUser) PostCommentResponseDto.noExistBoard();
+
+    const boardEntity = await this.boardRepository.findByBoardNumber(boardNumber);
+    if(!boardEntity) PostCommentResponseDto.noExistBoard();
+
+    const commentEntity = this.commentRepository.create(dto, boardNumber, email);
+    await this.commentRepository.save(commentEntity);
+ 
+    boardEntity.commentCount++;  // 댓글 카운트 1 증가 // private 지정안되서 여기서 사용가능
+    await this.boardRepository.save(boardEntity);
+
+    return PostCommentResponseDto.success();
   }
 
   async getBoard(boardNumber: number): Promise<GetBoardResponseDto> {

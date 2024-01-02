@@ -1,9 +1,9 @@
 import { Body, Controller, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
 import { BoardService } from './board.service';
-import { PatchBoardRequestDto, PostBoardRequestDto } from './dto/request';
+import { PatchBoardRequestDto, PostBoardRequestDto, PostCommentRequestDto } from './dto/request';
 import JwtAuthGuard from 'guard/jwt-auth.guard';
 import { GetSignInUser } from 'decorator';
-import { GetBoardResponseDto, PatchBoardResponseDto, PostBoardResponseDto } from './dto/response';
+import { GetBoardResponseDto, PatchBoardResponseDto, PostBoardResponseDto, PostCommentResponseDto } from './dto/response';
 
 @Controller('/api/v1/board')
 export class BoardController {
@@ -16,6 +16,17 @@ export class BoardController {
     @GetSignInUser() email: string
   ): Promise<PostBoardResponseDto> {
     const response = this.boardService.postBoard(requestBody, email);
+    return response;
+  }
+
+  @Post('/:boardNumber/comment')
+  @UseGuards(JwtAuthGuard)
+  postComment(
+    @Body() requestBody: PostCommentRequestDto,
+    @Param('boardNumber') boardNumber: number,
+    @GetSignInUser() email: string
+  ):Promise<PostCommentResponseDto> {
+    const response = this.boardService.postComment(requestBody, boardNumber, email);
     return response;
   }
 

@@ -45,6 +45,16 @@ export default class BoardRepository {
     }
   }
 
+  async existsByBoardNumber(boardNumber: number) {
+    try {
+      const result = this.repository.exist({ where: {boardNumber} });
+      return result;
+    } catch (exception) {
+      this.logger.error(exception.message);
+      ResponseDto.databaseError();
+    }
+  }
+
   async findByBoardNumber(boardNumber: number) {
     try {
       const boardEntity = await this.repository.findOne({ where: {boardNumber} });
