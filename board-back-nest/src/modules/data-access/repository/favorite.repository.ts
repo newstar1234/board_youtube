@@ -63,6 +63,15 @@ export default class FavoriteRepository {
     }
   }
 
+  async deleteByBoardNumber(boardNumber:number) {
+    try {
+      return await this.repository.delete({boardNumber});
+    } catch (exception) {
+      this.logger.error(exception.message);
+      ResponseDto.databaseError();
+    }
+  }
+
   async deleteByBoardNumberAndUserEmail(boardNumber:number, userEmail:string) {
     try {
       return await this.repository.delete({boardNumber,userEmail});

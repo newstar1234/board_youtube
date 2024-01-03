@@ -23,7 +23,7 @@ export default class BoardListViewEntity {
   @ViewColumn({
     name: 'title_image'
   })
-  titleImage: string|null;
+  boardTitleImage: string|null;
 
   @ViewColumn({
     name: 'view_count'

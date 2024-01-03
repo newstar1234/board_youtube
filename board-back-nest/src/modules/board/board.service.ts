@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { BoardRepository, CommentRepository, FavoriteRepository, ImageRepository, UserRepository } from 'modules/data-access/repository';
+import { BoardListViewRepository, BoardRepository, CommentRepository, FavoriteRepository, ImageRepository, UserRepository } from 'modules/data-access/repository';
 import { PatchBoardRequestDto, PostBoardRequestDto, PostCommentRequestDto } from './dto/request';
-import { GetBoardResponseDto, GetCommentListResponseDto, GetFavoriteListResponseDto, PatchBoardResponseDto, PostBoardResponseDto, PostCommentResponseDto, PutFavoriteResponseDto } from './dto/response';
+import { DeleteBoardResponseDto, GetBoardResponseDto, GetCommentListResponseDto, GetFavoriteListResponseDto, GetLatestListResponseDto, IncreseViewCountResponnseDto, PatchBoardResponseDto, PostBoardResponseDto, PostCommentResponseDto, PutFavoriteResponseDto } from './dto/response';
 
 @Injectable()
 export class BoardService {
@@ -11,7 +11,8 @@ export class BoardService {
     private readonly boardRepository: BoardRepository,
     private readonly imageRepository: ImageRepository,
     private readonly commentRepository: CommentRepository,
-    private readonly favoriteRepository: FavoriteRepository
+    private readonly favoriteRepository: FavoriteRepository,
+    private readonly boardListViewRepository: BoardListViewRepository
   ) {}
 
   async postBoard(dto:PostBoardRequestDto, email:string): Promise<PostBoardResponseDto> {
@@ -48,6 +49,13 @@ export class BoardService {
     return PostCommentResponseDto.success();
   }
 
+  async getLatestList():Promise<GetLatestListResponseDto> {
+
+    const boardListViewEntities = await this.boardListViewRepository.getLatestList();
+    return GetLatestListResponseDto.success(boardListViewEntities);
+
+  }
+
   async getBoard(boardNumber: number): Promise<GetBoardResponseDto> {
     const resultSet = await this.boardRepository.getBoard(boardNumber);
     if(!resultSet) GetBoardResponseDto.noExistBoard();
@@ -55,6 +63,17 @@ export class BoardService {
     const imageEntities = await this.imageRepository.findByBoardNumber(boardNumber);
 
     return GetBoardResponseDto.success(resultSet, imageEntities);
+  }
+
+  async increaseViewCount(boardNumber:number):Promise<IncreseViewCountResponnseDto> {
+
+    const boardEntity = await this.boardRepository.findByBoardNumber(boardNumber);
+    if(!boardEntity) IncreseViewCountResponnseDto.noExistBoard();
+
+    boardEntity.viewCount++;
+    await this.boardRepository.save(boardEntity);
+
+    return IncreseViewCountResponnseDto.success();
   }
 
   async getCommentList(boardNumber:number):Promise<GetCommentListResponseDto> {
@@ -126,6 +145,25 @@ export class BoardService {
 
     return PutFavoriteResponseDto.success();
 
+  }
+
+  async deleteBoard(boardNumber:number, email:string):Promise<DeleteBoardResponseDto> {
+
+    const isExistUser = await this.userRepository.existsByEmail(email);
+    if(!isExistUser) DeleteBoardResponseDto.noExistUser();
+
+    const boardEntity = await this.boardRepository.findByBoardNumber(boardNumber);
+    if(!boardEntity) DeleteBoardResponseDto.noExistBoard();
+
+    const isWriter = boardEntity.writerEmail === email;
+    if(!isWriter) DeleteBoardResponseDto.noPermission();
+
+    await this.imageRepository.deleteByBoardNumber(boardNumber);
+    await this.favoriteRepository.deleteByBoardNumber(boardNumber);
+    await this.commentRepository.deleteByBoardNumber(boardNumber);
+    await this.boardRepository.deleteByBoardNumber(boardNumber);
+    
+    return DeleteBoardResponseDto.success();
   }
 
 }

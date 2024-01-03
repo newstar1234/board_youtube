@@ -86,5 +86,14 @@ export default class BoardRepository {
       ResponseDto.databaseError();
     }
   }
+
+  async deleteByBoardNumber(boardNumber:number) {
+    try {
+      return await this.repository.delete({boardNumber});
+    } catch (exception) {
+      this.logger.error(exception.message);
+      ResponseDto.databaseError();
+    }
+  }
   
 }

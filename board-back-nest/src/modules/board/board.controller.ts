@@ -1,9 +1,9 @@
-import { Body, Controller, Get, Param, Patch, Post, Put, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Put, UseGuards } from '@nestjs/common';
 import { BoardService } from './board.service';
 import { PatchBoardRequestDto, PostBoardRequestDto, PostCommentRequestDto } from './dto/request';
 import JwtAuthGuard from 'guard/jwt-auth.guard';
 import { GetSignInUser } from 'decorator';
-import { GetBoardResponseDto, GetCommentListResponseDto, GetFavoriteListResponseDto, PatchBoardResponseDto, PostBoardResponseDto, PostCommentResponseDto, PutFavoriteResponseDto } from './dto/response';
+import { DeleteBoardResponseDto, GetBoardResponseDto, GetCommentListResponseDto, GetFavoriteListResponseDto, GetLatestListResponseDto, IncreseViewCountResponnseDto, PatchBoardResponseDto, PostBoardResponseDto, PostCommentResponseDto, PutFavoriteResponseDto } from './dto/response';
 
 @Controller('/api/v1/board')
 export class BoardController {
@@ -29,12 +29,26 @@ export class BoardController {
     const response = this.boardService.postComment(requestBody, boardNumber, email);
     return response;
   }
+  
+  @Get('/latest-list')
+  getLatestList():Promise<GetLatestListResponseDto> {
+    const response = this.boardService.getLatestList();
+    return response;
+  }
 
   @Get('/:boardNumber')
   getBoard(
     @Param('boardNumber') boardNumber: number
   ) :Promise<GetBoardResponseDto> {
     const response = this.boardService.getBoard(boardNumber);
+    return response;
+  }
+
+  @Get('/:boardNumber/increase-view-count')
+  increaceViewCount(
+    @Param('boardNumber') boardNumber: number
+  ):Promise<IncreseViewCountResponnseDto> {
+    const response = this.boardService.increaseViewCount(boardNumber);
     return response;
   }
 
@@ -72,6 +86,16 @@ export class BoardController {
     @GetSignInUser() email: string
   ):Promise<PutFavoriteResponseDto> {
     const response = this.boardService.putFavorite(boardNumber, email);
+    return response;
+  }
+
+  @Delete('/:boardNumber')
+  @UseGuards(JwtAuthGuard)
+  deleteBoard(
+    @Param('boardNumber') boardNumber:number,
+    @GetSignInUser() email: string
+  ):Promise<DeleteBoardResponseDto> {
+    const response = this.boardService.deleteBoard(boardNumber, email);
     return response;
   }
 
