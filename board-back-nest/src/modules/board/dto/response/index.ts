@@ -4,10 +4,11 @@ import PatchBoardResponseDto from "./patch-board.response.dto";
 import PostCommentResponseDto from "./post-comment.response.dto";
 import PutFavoriteResponseDto from "./put-favorite.response.dto";
 import DeleteBoardResponseDto from "./delete-board.response.dto";
+import GetTop3ListResponseDto from "./get-top-3-list.response.dto";
+import GetLatestListResponseDto from "./get-latest-list.response.dto";
 import GetCommentListResponseDto from "./get-comment-list.response.dto";
 import GetFavoriteListResponseDto from "./get-favorite-list.response.dto";
 import IncreseViewCountResponnseDto from "./increase-view-count.response.dto";
-import GetLatestListResponseDto from "./get-latest-list.response.dto";
 
 export {
   GetBoardResponseDto,
@@ -16,8 +17,9 @@ export {
   PostCommentResponseDto,
   PutFavoriteResponseDto,
   DeleteBoardResponseDto,
+  GetTop3ListResponseDto,
+  GetLatestListResponseDto,
   GetCommentListResponseDto,
   GetFavoriteListResponseDto,
   IncreseViewCountResponnseDto,
-  GetLatestListResponseDto
 }

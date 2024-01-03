@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { BoardListViewRepository, BoardRepository, CommentRepository, FavoriteRepository, ImageRepository, UserRepository } from 'modules/data-access/repository';
 import { PatchBoardRequestDto, PostBoardRequestDto, PostCommentRequestDto } from './dto/request';
-import { DeleteBoardResponseDto, GetBoardResponseDto, GetCommentListResponseDto, GetFavoriteListResponseDto, GetLatestListResponseDto, IncreseViewCountResponnseDto, PatchBoardResponseDto, PostBoardResponseDto, PostCommentResponseDto, PutFavoriteResponseDto } from './dto/response';
+import { DeleteBoardResponseDto, GetBoardResponseDto, GetCommentListResponseDto, GetFavoriteListResponseDto, GetLatestListResponseDto, GetTop3ListResponseDto, IncreseViewCountResponnseDto, PatchBoardResponseDto, PostBoardResponseDto, PostCommentResponseDto, PutFavoriteResponseDto } from './dto/response';
 
 @Injectable()
 export class BoardService {
@@ -54,6 +54,13 @@ export class BoardService {
     const boardListViewEntities = await this.boardListViewRepository.getLatestList();
     return GetLatestListResponseDto.success(boardListViewEntities);
 
+  }
+
+  async getTop3List():Promise<GetTop3ListResponseDto> {
+
+    const boardListViewEntities = await this.boardListViewRepository.getTop3List();
+    return GetTop3ListResponseDto.success(boardListViewEntities);
+    
   }
 
   async getBoard(boardNumber: number): Promise<GetBoardResponseDto> {

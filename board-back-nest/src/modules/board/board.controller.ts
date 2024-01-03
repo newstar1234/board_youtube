@@ -3,7 +3,7 @@ import { BoardService } from './board.service';
 import { PatchBoardRequestDto, PostBoardRequestDto, PostCommentRequestDto } from './dto/request';
 import JwtAuthGuard from 'guard/jwt-auth.guard';
 import { GetSignInUser } from 'decorator';
-import { DeleteBoardResponseDto, GetBoardResponseDto, GetCommentListResponseDto, GetFavoriteListResponseDto, GetLatestListResponseDto, IncreseViewCountResponnseDto, PatchBoardResponseDto, PostBoardResponseDto, PostCommentResponseDto, PutFavoriteResponseDto } from './dto/response';
+import { DeleteBoardResponseDto, GetBoardResponseDto, GetCommentListResponseDto, GetFavoriteListResponseDto, GetLatestListResponseDto, GetTop3ListResponseDto, IncreseViewCountResponnseDto, PatchBoardResponseDto, PostBoardResponseDto, PostCommentResponseDto, PutFavoriteResponseDto } from './dto/response';
 
 @Controller('/api/v1/board')
 export class BoardController {
@@ -33,6 +33,12 @@ export class BoardController {
   @Get('/latest-list')
   getLatestList():Promise<GetLatestListResponseDto> {
     const response = this.boardService.getLatestList();
+    return response;
+  }
+  
+  @Get('/top-3')
+  getTop3List():Promise<GetTop3ListResponseDto> {
+    const response = this.boardService.getTop3List();
     return response;
   }
 
