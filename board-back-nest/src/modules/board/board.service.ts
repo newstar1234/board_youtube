@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { BoardListViewRepository, BoardRepository, CommentRepository, FavoriteRepository, ImageRepository, SearchLogRepository, UserRepository } from 'modules/data-access/repository';
 import { PatchBoardRequestDto, PostBoardRequestDto, PostCommentRequestDto } from './dto/request';
-import { DeleteBoardResponseDto, GetBoardResponseDto, GetCommentListResponseDto, GetFavoriteListResponseDto, GetLatestListResponseDto, GetSearchListResponseDto, GetTop3ListResponseDto, GetUserListResponseDto, IncreseViewCountResponnseDto, PatchBoardResponseDto, PostBoardResponseDto, PostCommentResponseDto, PutFavoriteResponseDto } from './dto/response';
+import { DeleteBoardResponseDto, GetBoardResponseDto, GetCommentListResponseDto, GetFavoriteListResponseDto, GetLatestListResponseDto, GetSearchListResponseDto, GetTop3ListResponseDto, GetUserBoardListResponseDto, IncreseViewCountResponnseDto, PatchBoardResponseDto, PostBoardResponseDto, PostCommentResponseDto, PutFavoriteResponseDto } from './dto/response';
 
 @Injectable()
 export class BoardService {
@@ -81,13 +81,13 @@ export class BoardService {
     return GetSearchListResponseDto.success(boardListViewEntities);
   }
 
-  async getUserList(email: string):Promise<GetUserListResponseDto> {
+  async getUserBoardList(email: string):Promise<GetUserBoardListResponseDto> {
 
   const isExistUser = this.userRepository.existsByEmail(email);
-  if(!isExistUser) GetUserListResponseDto.noExistUser();
+  if(!isExistUser) GetUserBoardListResponseDto.noExistUser();
 
   const boardListViewEntities = await this.boardListViewRepository.getUserList(email);
-  return GetUserListResponseDto.success(boardListViewEntities);
+  return GetUserBoardListResponseDto.success(boardListViewEntities);
 
   }
 

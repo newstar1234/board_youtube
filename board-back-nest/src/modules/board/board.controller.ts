@@ -3,7 +3,7 @@ import { BoardService } from './board.service';
 import { PatchBoardRequestDto, PostBoardRequestDto, PostCommentRequestDto } from './dto/request';
 import JwtAuthGuard from 'guard/jwt-auth.guard';
 import { GetSignInUser } from 'decorator';
-import { DeleteBoardResponseDto, GetBoardResponseDto, GetCommentListResponseDto, GetFavoriteListResponseDto, GetLatestListResponseDto, GetSearchListResponseDto, GetTop3ListResponseDto, GetUserListResponseDto, IncreseViewCountResponnseDto, PatchBoardResponseDto, PostBoardResponseDto, PostCommentResponseDto, PutFavoriteResponseDto } from './dto/response';
+import { DeleteBoardResponseDto, GetBoardResponseDto, GetCommentListResponseDto, GetFavoriteListResponseDto, GetLatestListResponseDto, GetSearchListResponseDto, GetTop3ListResponseDto, GetUserBoardListResponseDto, IncreseViewCountResponnseDto, PatchBoardResponseDto, PostBoardResponseDto, PostCommentResponseDto, PutFavoriteResponseDto } from './dto/response';
 
 @Controller('/api/v1/board')
 export class BoardController {
@@ -52,8 +52,11 @@ export class BoardController {
   }
 
   @Get('/user-board-list/:email')
-  getUserList():Promise<GetUserListResponseDto> {
-    
+  getUserBoardList(
+    @Param('email') email: string
+  ):Promise<GetUserBoardListResponseDto> {
+    const response = this.boardService.getUserBoardList(email);
+    return response;
   }
 
   @Get('/:boardNumber')

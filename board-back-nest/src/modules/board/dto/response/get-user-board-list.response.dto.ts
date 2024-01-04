@@ -4,7 +4,7 @@ import { ResponseDto } from "types/classes";
 import { ResponseCode, ResponseMessage } from "types/enums";
 import { BoardListItem } from "types/interfaces";
 
-export default class GetUserListResponseDto extends ResponseDto {
+export default class GetUserBoardListResponseDto extends ResponseDto {
 
   private userBoardList: BoardListItem[];
 
@@ -15,7 +15,7 @@ export default class GetUserListResponseDto extends ResponseDto {
   }
 
   static success(boardListViewEntities: BoardListViewEntity[]) {
-    return new GetUserListResponseDto(boardListViewEntities);
+    return new GetUserBoardListResponseDto(boardListViewEntities);
   }
 
   static noExistUser() {
