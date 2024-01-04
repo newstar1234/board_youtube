@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { BoardListViewRepository, BoardRepository, CommentRepository, FavoriteRepository, ImageRepository, UserRepository } from 'modules/data-access/repository';
+import { BoardListViewRepository, BoardRepository, CommentRepository, FavoriteRepository, ImageRepository, SearchLogRepository, UserRepository } from 'modules/data-access/repository';
 import { PatchBoardRequestDto, PostBoardRequestDto, PostCommentRequestDto } from './dto/request';
-import { DeleteBoardResponseDto, GetBoardResponseDto, GetCommentListResponseDto, GetFavoriteListResponseDto, GetLatestListResponseDto, GetTop3ListResponseDto, IncreseViewCountResponnseDto, PatchBoardResponseDto, PostBoardResponseDto, PostCommentResponseDto, PutFavoriteResponseDto } from './dto/response';
+import { DeleteBoardResponseDto, GetBoardResponseDto, GetCommentListResponseDto, GetFavoriteListResponseDto, GetLatestListResponseDto, GetSearchListResponseDto, GetTop3ListResponseDto, GetUserListResponseDto, IncreseViewCountResponnseDto, PatchBoardResponseDto, PostBoardResponseDto, PostCommentResponseDto, PutFavoriteResponseDto } from './dto/response';
 
 @Injectable()
 export class BoardService {
@@ -12,6 +12,7 @@ export class BoardService {
     private readonly imageRepository: ImageRepository,
     private readonly commentRepository: CommentRepository,
     private readonly favoriteRepository: FavoriteRepository,
+    private readonly searchLogRepository: SearchLogRepository,
     private readonly boardListViewRepository: BoardListViewRepository
   ) {}
 
@@ -61,6 +62,33 @@ export class BoardService {
     const boardListViewEntities = await this.boardListViewRepository.getTop3List();
     return GetTop3ListResponseDto.success(boardListViewEntities);
     
+  }
+
+  async getSearchList(searchWord:string, preSearchWord:string | undefined):Promise<GetSearchListResponseDto> {
+
+    const boardListViewEntities = await this.boardListViewRepository.getSearchList(searchWord);
+
+    preSearchWord = preSearchWord ? preSearchWord : null;
+    let searchLogEntity = this.searchLogRepository.create(searchWord, preSearchWord, false);
+    await this.searchLogRepository.save(searchLogEntity);
+
+    const relation = preSearchWord ? true : false;
+    if(relation) {
+      searchLogEntity = this.searchLogRepository.create(preSearchWord, searchWord, true);
+      await this.searchLogRepository.save(searchLogEntity);
+    } 
+
+    return GetSearchListResponseDto.success(boardListViewEntities);
+  }
+
+  async getUserList(email: string):Promise<GetUserListResponseDto> {
+
+  const isExistUser = this.userRepository.existsByEmail(email);
+  if(!isExistUser) GetUserListResponseDto.noExistUser();
+
+  const boardListViewEntities = await this.boardListViewRepository.getUserList(email);
+  return GetUserListResponseDto.success(boardListViewEntities);
+
   }
 
   async getBoard(boardNumber: number): Promise<GetBoardResponseDto> {

@@ -3,7 +3,7 @@ import { BoardService } from './board.service';
 import { PatchBoardRequestDto, PostBoardRequestDto, PostCommentRequestDto } from './dto/request';
 import JwtAuthGuard from 'guard/jwt-auth.guard';
 import { GetSignInUser } from 'decorator';
-import { DeleteBoardResponseDto, GetBoardResponseDto, GetCommentListResponseDto, GetFavoriteListResponseDto, GetLatestListResponseDto, GetTop3ListResponseDto, IncreseViewCountResponnseDto, PatchBoardResponseDto, PostBoardResponseDto, PostCommentResponseDto, PutFavoriteResponseDto } from './dto/response';
+import { DeleteBoardResponseDto, GetBoardResponseDto, GetCommentListResponseDto, GetFavoriteListResponseDto, GetLatestListResponseDto, GetSearchListResponseDto, GetTop3ListResponseDto, GetUserListResponseDto, IncreseViewCountResponnseDto, PatchBoardResponseDto, PostBoardResponseDto, PostCommentResponseDto, PutFavoriteResponseDto } from './dto/response';
 
 @Controller('/api/v1/board')
 export class BoardController {
@@ -40,6 +40,20 @@ export class BoardController {
   getTop3List():Promise<GetTop3ListResponseDto> {
     const response = this.boardService.getTop3List();
     return response;
+  }
+
+  @Get(['/search-list/:searchWord', '/search-list/:searchWord/:preSearchWord'])
+  getSearchList(
+    @Param('searchWord') searchWord: string,
+    @Param('preSearchWord') preSearchWord: string
+  ):Promise<GetSearchListResponseDto> {
+    const response = this.boardService.getSearchList(searchWord, preSearchWord);
+    return response;
+  }
+
+  @Get('/user-board-list/:email')
+  getUserList():Promise<GetUserListResponseDto> {
+    
   }
 
   @Get('/:boardNumber')
