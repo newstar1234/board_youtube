@@ -6,6 +6,13 @@
   "configurations": [
     {
       "type": "java",
+      "name": "BackApplication",
+      "request": "launch",
+      "mainClass": "com.housing.back.BackApplication",
+      "projectName": "back"
+    },
+    {
+      "type": "java",
       "name": "Current File",
       "request": "launch",
       "mainClass": "${file}"
