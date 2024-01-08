@@ -1,0 +1,15 @@
+enum ResponseCode {
+
+  SUCCESS = "SU",
+
+  VALIDATION_FAIL = "VF",
+  DUPLICATIOM_ID = "DI",
+
+  SIGN_IN_FAIL = "SF",
+  CERTIFICATION_FAIL = "CF",
+
+  DATABASE_ERROR = "DBE"
+
+};
+
+export default ResponseCode;
