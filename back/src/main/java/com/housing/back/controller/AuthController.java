@@ -6,7 +6,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.housing.back.dto.request.auth.EmailCertificationRequestDto;
 import com.housing.back.dto.request.auth.IdCheckRequestDto;
+import com.housing.back.dto.response.auth.EmailCertificationResponseDto;
 import com.housing.back.dto.response.auth.IdCheckResponseDto;
 import com.housing.back.service.AuthService;
 
@@ -26,6 +28,14 @@ public class AuthController {
     @RequestBody @Valid IdCheckRequestDto requestBody
   ) {
     ResponseEntity<? super IdCheckResponseDto> response = authService.idCheck(requestBody);
+    return response;
+  }
+
+  @PostMapping("/email-certification")
+  public ResponseEntity<? super EmailCertificationResponseDto> emailCertification(
+    @RequestBody @Valid EmailCertificationRequestDto requestBody
+  ) {
+    ResponseEntity<? super EmailCertificationResponseDto> response = authService.emailCertification(requestBody);
     return response;
   }
 

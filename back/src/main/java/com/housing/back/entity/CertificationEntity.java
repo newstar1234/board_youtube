@@ -17,6 +17,6 @@ public class CertificationEntity {
   @Id
   private String userId;
   private String email;
-  private String certification;
+  private String certificationNumber;
 
 }

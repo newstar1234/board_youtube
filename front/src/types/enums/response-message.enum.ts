@@ -8,6 +8,7 @@ enum ResponseMessage {
   SIGN_IN_FAIL = "Login informaion mismatch",
   CERTIFICATION_FAIL = "Certification failed",
 
+  MAIL_FAIL = "Mail send failed",
   DATABASE_ERROR = "Database error"
 
 };
