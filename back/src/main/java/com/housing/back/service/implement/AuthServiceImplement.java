@@ -1,17 +1,22 @@
 package com.housing.back.service.implement;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.housing.back.common.CertificationNumber;
 import com.housing.back.dto.request.auth.CheckCertificationRequestDto;
 import com.housing.back.dto.request.auth.EmailCertificationRequestDto;
 import com.housing.back.dto.request.auth.IdCheckRequestDto;
+import com.housing.back.dto.request.auth.SignUpRequestDto;
 import com.housing.back.dto.response.ResponseDto;
 import com.housing.back.dto.response.auth.CheckCertificationResponseDto;
 import com.housing.back.dto.response.auth.EmailCertificationResponseDto;
 import com.housing.back.dto.response.auth.IdCheckResponseDto;
+import com.housing.back.dto.response.auth.SignUpResponseDto;
 import com.housing.back.entity.CertificationEntity;
+import com.housing.back.entity.UserEntity;
 import com.housing.back.provider.EmailProvider;
 import com.housing.back.repository.CertificationRepository;
 import com.housing.back.repository.UserRepository;
@@ -22,10 +27,14 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class AuthServiceImplement implements AuthService{
   
+  // final을 붙여서 외부에서 제어의 역전을 통해 의존성 주입
   private final UserRepository userRepository;
   private final CertificationRepository certificationRepository;
 
   private final EmailProvider emailProvider;
+
+  // 직접 사용할 것을 선택
+  private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
   @Override // ID 중복 확인
   public ResponseEntity<? super IdCheckResponseDto> idCheck(IdCheckRequestDto dto) {
@@ -40,7 +49,7 @@ public class AuthServiceImplement implements AuthService{
       exception.printStackTrace();
       return ResponseDto.databaseError();
     }
-
+     
     return IdCheckResponseDto.success();
 
   }
@@ -94,6 +103,41 @@ public class AuthServiceImplement implements AuthService{
     }
 
     return CheckCertificationResponseDto.success();
+
+  }
+
+  @Override
+  public ResponseEntity<? super SignUpResponseDto> signUp(SignUpRequestDto dto) {
+
+    try {
+
+      String userId = dto.getId();
+      boolean isExistId = userRepository.existsByUserId(userId);
+      if(isExistId) return SignUpResponseDto.duplicateId();
+
+      String email = dto.getEmail();
+      String certificationNumber = dto.getCertificationNumber();
+
+      CertificationEntity certificationEntity = certificationRepository.findByUserId(userId);
+      boolean isMatched = certificationEntity.getEmail().equals(email) && certificationEntity.getCertificationNumber().equals(certificationNumber);
+      if(!isMatched) return SignUpResponseDto.certificationFail();
+      
+      String password = dto.getPassword();
+      String encodedPassword = passwordEncoder.encode(password);
+      dto.setPassword(encodedPassword);
+
+      UserEntity userEntity = new UserEntity(dto);
+      userRepository.save(userEntity);
+
+      certificationRepository.deleteByUserId(userId);
+      // certificationRepository.delete(certificationEntity);
+
+    } catch (Exception exception) {
+      exception.printStackTrace();
+      return ResponseDto.databaseError();
+    }
+
+    return SignUpResponseDto.success();
 
   }
   
