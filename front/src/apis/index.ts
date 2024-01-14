@@ -1,6 +1,6 @@
 import axios, { AxiosResponse } from "axios";
-import { CheckCertificationRequestDto, EmailCertificationReqeustDto, IdCheckRequestDto, SignUpRequestDto } from "./request/auth";
-import { CheckCertificationResponseDto, EmailCertificationResponseDto, IdCheckResponseDto, SignUpResponseDto } from "./response/auth";
+import { CheckCertificationRequestDto, EmailCertificationReqeustDto, IdCheckRequestDto, SignInRequestDto, SignUpRequestDto } from "./request/auth";
+import { CheckCertificationResponseDto, EmailCertificationResponseDto, IdCheckResponseDto, SignInResponseDto, SignUpResponseDto } from "./response/auth";
 import { ResponseDto } from "./response";
 
 // response 함수 //
@@ -42,10 +42,18 @@ export const checkCertificationRequest = async (requestBody : CheckCertification
                 return result;
 };
 
+const SIGN_IN_URL = () => `${API_DOMAIN}/auth/sign-in`;
+export const signInRequest = async (requestBody: SignInRequestDto) => {
+  const result = await axios.post(SIGN_IN_URL(), requestBody)
+                .then(responseHandler<SignInResponseDto>)
+                .catch(errorHandler);
+                return result;
+}
+
 const SIGN_UP_URL = () => `${API_DOMAIN}/auth/sign-up`;
 export const signUpRequest = async (requestBody: SignUpRequestDto) => {
   const result = await axios.post(SIGN_UP_URL(), requestBody) 
                 .then(responseHandler<SignUpResponseDto>)
                 .catch(errorHandler);
                 return result;
-}
+};
